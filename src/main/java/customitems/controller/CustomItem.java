@@ -2,10 +2,12 @@ package customitems.controller;
 
 import customitems.Main;
 import customitems.nbt.NBTTagUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,70 +15,57 @@ import org.bukkit.util.Consumer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class CustomItem {
+public class CustomItem extends ItemStack {
 
-    private ItemStack item;
     private int id;
 
-    private Consumer<Player> leftClickBlockCallback;
-    private Consumer<Player> rightClickBlockCallback;
-    private Consumer<Player> leftClickAirCallback;
-    private Consumer<Player> rightClickAirCallback;
-
     public CustomItem(ItemStack item) {
-        this.item = item;
-        id = getID();
-        this.leftClickBlockCallback = null;
-        this.rightClickBlockCallback = null;
-        this.leftClickAirCallback = null;
-        this.rightClickAirCallback = null;
+        super(NBTTagUtils.setNBTTagInt(item, "CustomItemID", getID()));
+        this.id = NBTTagUtils.getNBTTagInt(this, "CustomItemID");
     }
     public CustomItem(Material material)
     {
         this(new ItemStack(material));
     }
 
-    protected int getID()
+    private static int getID()
     {
-        return this.item.hashCode();
+        Random random = new Random();
+        return random.nextInt();
     }
     public final void give(Player player)
     {
-        player.getInventory().addItem(this.item);
+        player.getInventory().addItem(this);
     }
 
     public CustomItem setItemStack(ItemStack stack) {
-        this.item = stack;
-        return this;
+        return new CustomItem(stack);
     }
     public CustomItem setMaterial(Material material) {
-        this.item.setType(material);
+        this.setType(material);
         return this;
     }
     public CustomItem setCount(int count) {
-        this.item.setAmount(count);
+        this.setAmount(count);
         return this;
     }
 
-    public CustomItem setItemMeta(ItemMeta meta) {
-        this.item.setItemMeta(meta);
-        return this;
-    }
     public CustomItem setDisplayName(String name) {
-        var meta = this.item.getItemMeta();
+        var meta = this.getItemMeta();
         meta.setDisplayName(name);
-        this.item.setItemMeta(meta);
+        this.setItemMeta(meta);
         return this;
     }
     public CustomItem setLore(List<String> lore) {
-        var meta = this.item.getItemMeta();
+        var meta = this.getItemMeta();
         meta.setLore(lore);
-        this.item.setItemMeta(meta);
+        this.setItemMeta(meta);
         return this;
     }
     public CustomItem addLore(String loreLine) {
-        var meta = this.item.getItemMeta();
+        var meta = this.getItemMeta();
         var lore = meta.getLore();
         if(lore == null)
         {
@@ -84,75 +73,69 @@ public class CustomItem {
         }
         lore.add(loreLine);
         meta.setLore(lore);
-        this.item.setItemMeta(meta);
+        this.setItemMeta(meta);
         return this;
     }
 
     public CustomItem addFlag(ItemFlag flag) {
-        var meta = this.item.getItemMeta();
+        var meta = this.getItemMeta();
         meta.addItemFlags(flag);
-        this.item.setItemMeta(meta);
+        this.setItemMeta(meta);
         return this;
     }
 
-    public CustomItem addEnchantment(Enchantment enchantment, int level) {
-        this.item.addEnchantment(enchantment, level);
-        return this;
-    }
     public CustomItem addEnchantment(Enchantment enchantment, int level, boolean hide) {
-        this.item.addEnchantment(enchantment, level);
+        this.addUnsafeEnchantment(enchantment, level);
         if(hide)
         {
-            var meta = this.item.getItemMeta();
+            var meta = this.getItemMeta();
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            this.item.setItemMeta(meta);
+            this.setItemMeta(meta);
         }
         return this;
     }
 
 
-    public CustomItem onLeftClick(Consumer<Player> callback) {
+    public CustomItem onLeftClick(Consumer<PlayerInteractEvent> callback) {
         Main.controller.register(this.id, callback, Action.LEFT_CLICK_BLOCK);
         Main.controller.register(this.id, callback, Action.LEFT_CLICK_AIR);
         return this;
     }
-    public CustomItem onRightClick(Consumer<Player> callback) {
+    public CustomItem onRightClick(Consumer<PlayerInteractEvent> callback) {
         Main.controller.register(this.id, callback, Action.RIGHT_CLICK_BLOCK);
         Main.controller.register(this.id, callback, Action.RIGHT_CLICK_AIR);
         return this;
     }
-    public CustomItem onLeftClickBlock(Consumer<Player> callback) {
+    public CustomItem onLeftClickBlock(Consumer<PlayerInteractEvent> callback) {
         Main.controller.register(this.id, callback, Action.LEFT_CLICK_BLOCK);
         return this;
     }
-    public CustomItem onRightClickBlock(Consumer<Player> callback) {
+    public CustomItem onRightClickBlock(Consumer<PlayerInteractEvent> callback) {
         Main.controller.register(this.id, callback, Action.RIGHT_CLICK_BLOCK);
         return this;
     }
-    public CustomItem onLeftClickAir(Consumer<Player> callback) {
+    public CustomItem onLeftClickAir(Consumer<PlayerInteractEvent> callback) {
         Main.controller.register(this.id, callback, Action.LEFT_CLICK_AIR);
         return this;
     }
-    public CustomItem onRightClickAir(Consumer<Player> callback) {
+    public CustomItem onRightClickAir(Consumer<PlayerInteractEvent> callback) {
         Main.controller.register(this.id, callback, Action.RIGHT_CLICK_AIR);
         return this;
     }
 
 
     public CustomItem setNBTTagInt(String tag, int value) {
-        this.item = NBTTagUtils.setNBTTagInt(this.item, tag, value);
-        return this;
+        return new CustomItem(NBTTagUtils.setNBTTagInt(this, tag, value));
     }
     public CustomItem setNBTTagString(String tag, String value) {
-        this.item = NBTTagUtils.setNBTTagString(this.item, tag, value);
-        return this;
+        return new CustomItem(NBTTagUtils.setNBTTagString(this, tag, value));
     }
 
     public int getNBTTagInt(String tag) {
-        return NBTTagUtils.getNBTTagInt(this.item, tag);
+        return NBTTagUtils.getNBTTagInt(this, tag);
     }
     public String getNBTTagString(String tag) {
-        return NBTTagUtils.getNBTTagString(this.item, tag);
+        return NBTTagUtils.getNBTTagString(this, tag);
     }
 
 }

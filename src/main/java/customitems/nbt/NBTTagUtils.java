@@ -1,5 +1,6 @@
 package customitems.nbt;
 
+import customitems.controller.CustomItem;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
