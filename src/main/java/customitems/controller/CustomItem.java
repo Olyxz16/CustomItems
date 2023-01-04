@@ -8,7 +8,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Consumer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +45,10 @@ public abstract class CustomItem {
     }
 
     /* Item Customization */
+
+    public ItemStack asItemStack() {
+        return this.item;
+    }
     public CustomItem setMaterial(Material material) {
         this.item.setType(material);
         return this;

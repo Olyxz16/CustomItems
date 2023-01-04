@@ -16,19 +16,18 @@ public class Test extends CustomItem {
         return item;
     }
 
-    @Override
     public void onLeftClickBlock(PlayerInteractEvent e) {
         System.out.println("Test : onLeftClickBlock");
     }
-    @Override
+
     public void onRightClickBlock(PlayerInteractEvent e) {
         System.out.println("Test : onRightClickBlock");
     }
-    @Override
+
     public void onLeftClickAir(PlayerInteractEvent e) {
         System.out.println("Test : onLeftClickAir");
     }
-    @Override
+
     public void onRightClickAir(PlayerInteractEvent e) {
         System.out.println("Test : onRightClickAir");
     }
