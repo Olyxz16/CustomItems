@@ -1,52 +1,57 @@
 package customitems.controller;
 
 import customitems.nbt.NBTTagUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Consumer;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class CustomItemController implements Listener {
 
-    private Set<Integer> ids;
-    private Map<Integer, Consumer<PlayerInteractEvent>> leftBlockEventMap;
-    private Map<Integer, Consumer<PlayerInteractEvent>> rightBlockEventMap;
-    private Map<Integer, Consumer<PlayerInteractEvent>> leftAirEventMap;
-    private Map<Integer, Consumer<PlayerInteractEvent>> rightAirEventMap;
+    private static Set<String> ids;
+    private static Map<String, Consumer<PlayerInteractEvent>> leftBlockEventMap;
+    private static Map<String, Consumer<PlayerInteractEvent>> rightBlockEventMap;
+    private static Map<String, Consumer<PlayerInteractEvent>> leftAirEventMap;
+    private static Map<String, Consumer<PlayerInteractEvent>> rightAirEventMap;
 
     public CustomItemController()
     {
-        this.ids = new HashSet<>();
-        this.leftBlockEventMap = new HashMap<>();
-        this.rightBlockEventMap = new HashMap<>();
-        this.leftAirEventMap = new HashMap<>();
-        this.rightAirEventMap = new HashMap<>();
+        ids = new HashSet<>();
+        leftBlockEventMap = new HashMap<>();
+        rightBlockEventMap = new HashMap<>();
+        leftAirEventMap = new HashMap<>();
+        rightAirEventMap = new HashMap<>();
     }
 
-    void register(Integer id, Consumer<PlayerInteractEvent> callback, Action action)
+
+    public static void register(String id, Action action, Consumer<PlayerInteractEvent> callback)
     {
-        this.ids.add(id);
+        ids.add(id);
         switch(action)
         {
-            case LEFT_CLICK_BLOCK: this.leftBlockEventMap.put(id, callback); break;
-            case RIGHT_CLICK_BLOCK: this.rightBlockEventMap.put(id, callback); break;
-            case LEFT_CLICK_AIR: this.leftAirEventMap.put(id, callback); break;
-            case RIGHT_CLICK_AIR: this.rightAirEventMap.put(id, callback); break;
+            case LEFT_CLICK_BLOCK: leftBlockEventMap.put(id, callback); break;
+            case RIGHT_CLICK_BLOCK: rightBlockEventMap.put(id, callback); break;
+            case LEFT_CLICK_AIR: leftAirEventMap.put(id, callback); break;
+            case RIGHT_CLICK_AIR: rightAirEventMap.put(id, callback); break;
             default: return;
         }
     }
+
+
+
+    /* ça c'est bon je pense */
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e)
     {
         var item = e.getItem();
-        int id = NBTTagUtils.getNBTTagInt(item, "CustomItemID");
+        String id = NBTTagUtils.getNBTTagString(item, "CustomItemID");
         if(!this.ids.contains(id)) {
                return;
         }
@@ -60,7 +65,7 @@ public class CustomItemController implements Listener {
         }
     }
 
-    private void run(Map<Integer, Consumer<PlayerInteractEvent>> map, int id, PlayerInteractEvent event) {
+    private void run(Map<String, Consumer<PlayerInteractEvent>> map, String id, PlayerInteractEvent event) {
         if(map.containsKey(id)) {
             map.get(id).accept(event);
         }
