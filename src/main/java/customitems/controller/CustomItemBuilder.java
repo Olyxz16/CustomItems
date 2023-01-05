@@ -175,7 +175,6 @@ public class CustomItemBuilder {
         return item;
     }
 
-
     public static ItemStack setNBTTagInt(ItemStack item, String tag, int value) {
         item = NBTTagUtils.setNBTTagInt(item, tag, value);
         return item;
