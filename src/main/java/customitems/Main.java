@@ -14,14 +14,6 @@ public class Main extends JavaPlugin {
         controller = new CustomItemController();
         Bukkit.getPluginManager().registerEvents(controller, this);
         System.out.println("CustomItems loaded !");
-
-        Bukkit.broadcastMessage("1");
-
-        var test = new Test();
-        test.register();
-        //var moi = Bukkit.getServer().getPlayer("MrOlyxz16");
-        //test.giveTo(moi);
-
     }
 
 }

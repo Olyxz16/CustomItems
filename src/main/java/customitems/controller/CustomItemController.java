@@ -43,10 +43,6 @@ public class CustomItemController implements Listener {
         }
     }
 
-
-
-    /* ça c'est bon je pense */
-
     @EventHandler
     public void onInteract(PlayerInteractEvent e)
     {
@@ -70,6 +66,5 @@ public class CustomItemController implements Listener {
             map.get(id).accept(event);
         }
     }
-
 
 }
