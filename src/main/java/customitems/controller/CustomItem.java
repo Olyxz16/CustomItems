@@ -34,6 +34,7 @@ public abstract class CustomItem {
         CustomItemController.register(id, Action.LEFT_CLICK_AIR, this::onLeftClickAir);
         CustomItemController.register(id, Action.RIGHT_CLICK_AIR, this::onRightClickAir);
         CustomItemController.register(id, this::onBlockBreak);
+        System.out.println("CustomItem " + this.getClass().getSimpleName() + " loaded !");
     }
 
     protected final boolean equals(ItemStack other) {
@@ -41,9 +42,10 @@ public abstract class CustomItem {
         return getID().equalsIgnoreCase(otherid);
     }
 
-    public abstract void onLeftClickBlock(PlayerInteractEvent e);
-    public abstract void onRightClickBlock(PlayerInteractEvent e);
-    public abstract void onLeftClickAir(PlayerInteractEvent e);
-    public abstract void onRightClickAir(PlayerInteractEvent e);
+    public void onLeftClickBlock(PlayerInteractEvent e) {}
+    public void onRightClickBlock(PlayerInteractEvent e) {}
+    public void onLeftClickAir(PlayerInteractEvent e) {}
+    public void onRightClickAir(PlayerInteractEvent e) {}
+
     public void onBlockBreak(BlockBreakEvent e) {}
 }
