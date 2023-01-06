@@ -17,15 +17,15 @@ public abstract class CustomItem {
     protected CustomItem() {
         this.item = new ItemStack(BASE_MAT);
         this.item = build();
-        this.item = NBTTagUtils.setNBTTagString(this.item, ID_TAG, getID());
+        this.item = NBTTagUtils.setNBTTagInt(this.item, ID_TAG, getID());
     }
 
     protected abstract ItemStack build();
     public final ItemStack asItemStack() {
         return new ItemStack(this.item);
     }
-    public final String getID() {
-        return this.getClass().getSimpleName();
+    public final int getID() {
+        return this.getClass().getSimpleName().hashCode();
     }
     public final void register() {
         var id = this.getID();
@@ -36,10 +36,9 @@ public abstract class CustomItem {
         CustomItemController.register(id, this::onBlockBreak);
         System.out.println("CustomItem " + this.getClass().getSimpleName() + " loaded !");
     }
-
     protected final boolean equals(ItemStack other) {
-        var otherid = NBTTagUtils.getNBTTagString(other, ID_TAG);
-        return getID().equalsIgnoreCase(otherid);
+        var otherid = NBTTagUtils.getNBTTagInt(other, ID_TAG);
+        return getID() == otherid;
     }
 
     public void onLeftClickBlock(PlayerInteractEvent e) {}

@@ -15,14 +15,14 @@ import java.util.Set;
 
 public class CustomItemController implements Listener {
 
-    private static Set<String> ids;
+    private static Set<Integer> ids;
 
-    private static Map<String, Consumer<PlayerInteractEvent>> leftBlockEventMap;
-    private static Map<String, Consumer<PlayerInteractEvent>> rightBlockEventMap;
-    private static Map<String, Consumer<PlayerInteractEvent>> leftAirEventMap;
-    private static Map<String, Consumer<PlayerInteractEvent>> rightAirEventMap;
+    private static Map<Integer, Consumer<PlayerInteractEvent>> leftBlockEventMap;
+    private static Map<Integer, Consumer<PlayerInteractEvent>> rightBlockEventMap;
+    private static Map<Integer, Consumer<PlayerInteractEvent>> leftAirEventMap;
+    private static Map<Integer, Consumer<PlayerInteractEvent>> rightAirEventMap;
 
-    private static Map<String, Consumer<BlockBreakEvent>> blockBreakEventMap;
+    private static Map<Integer, Consumer<BlockBreakEvent>> blockBreakEventMap;
 
     public CustomItemController()
     {
@@ -35,7 +35,7 @@ public class CustomItemController implements Listener {
     }
 
 
-    public static void register(String id, Action action, Consumer<PlayerInteractEvent> callback)
+    public static void register(Integer id, Action action, Consumer<PlayerInteractEvent> callback)
     {
         ids.add(id);
         switch(action)
@@ -47,7 +47,7 @@ public class CustomItemController implements Listener {
             default: return;
         }
     }
-    public static void register(String id, Consumer<BlockBreakEvent> callback) {
+    public static void register(Integer id, Consumer<BlockBreakEvent> callback) {
         ids.add(id);
         blockBreakEventMap.put(id, callback);
     }
@@ -56,7 +56,7 @@ public class CustomItemController implements Listener {
     public void onInteract(PlayerInteractEvent e)
     {
         var item = e.getItem();
-        String id = NBTTagUtils.getNBTTagString(item, CustomItem.ID_TAG);
+        int id = NBTTagUtils.getNBTTagInt(item, CustomItem.ID_TAG);
         if(!this.ids.contains(id)) {
                return;
         }
@@ -69,7 +69,7 @@ public class CustomItemController implements Listener {
             default: return;
         }
     }
-    private void run(Map<String, Consumer<PlayerInteractEvent>> map, String id, PlayerInteractEvent event) {
+    private void run(Map<Integer, Consumer<PlayerInteractEvent>> map, int id, PlayerInteractEvent event) {
         if(map.containsKey(id)) {
             map.get(id).accept(event);
         }
