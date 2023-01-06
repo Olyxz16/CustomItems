@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class CustomItem {
 
-    private static final String ID_TAG = "CustomItemID";
+    static final String ID_TAG = "CustomItemID";
     private static final Material BASE_MAT = Material.STONE;
 
     protected ItemStack item;

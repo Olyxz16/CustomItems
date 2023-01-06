@@ -16,6 +16,7 @@ import java.util.Set;
 public class CustomItemController implements Listener {
 
     private static Set<String> ids;
+
     private static Map<String, Consumer<PlayerInteractEvent>> leftBlockEventMap;
     private static Map<String, Consumer<PlayerInteractEvent>> rightBlockEventMap;
     private static Map<String, Consumer<PlayerInteractEvent>> leftAirEventMap;
@@ -55,7 +56,7 @@ public class CustomItemController implements Listener {
     public void onInteract(PlayerInteractEvent e)
     {
         var item = e.getItem();
-        String id = NBTTagUtils.getNBTTagString(item, "CustomItemID");
+        String id = NBTTagUtils.getNBTTagString(item, CustomItem.ID_TAG);
         if(!this.ids.contains(id)) {
                return;
         }
@@ -68,7 +69,6 @@ public class CustomItemController implements Listener {
             default: return;
         }
     }
-
     private void run(Map<String, Consumer<PlayerInteractEvent>> map, String id, PlayerInteractEvent event) {
         if(map.containsKey(id)) {
             map.get(id).accept(event);
