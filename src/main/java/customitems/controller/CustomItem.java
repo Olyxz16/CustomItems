@@ -3,6 +3,7 @@ package customitems.controller;
 import customitems.nbt.NBTTagUtils;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,6 +33,7 @@ public abstract class CustomItem {
         CustomItemController.register(id, Action.RIGHT_CLICK_BLOCK, this::onRightClickBlock);
         CustomItemController.register(id, Action.LEFT_CLICK_AIR, this::onLeftClickAir);
         CustomItemController.register(id, Action.RIGHT_CLICK_AIR, this::onRightClickAir);
+        CustomItemController.register(id, this::onBlockBreak);
     }
 
     protected final boolean equals(ItemStack other) {
@@ -43,4 +45,5 @@ public abstract class CustomItem {
     public abstract void onRightClickBlock(PlayerInteractEvent e);
     public abstract void onLeftClickAir(PlayerInteractEvent e);
     public abstract void onRightClickAir(PlayerInteractEvent e);
+    public void onBlockBreak(BlockBreakEvent e) {}
 }

@@ -4,6 +4,7 @@ import customitems.nbt.NBTTagUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Consumer;
 
@@ -20,6 +21,8 @@ public class CustomItemController implements Listener {
     private static Map<String, Consumer<PlayerInteractEvent>> leftAirEventMap;
     private static Map<String, Consumer<PlayerInteractEvent>> rightAirEventMap;
 
+    private static Map<String, Consumer<BlockBreakEvent>> blockBreakEventMap;
+
     public CustomItemController()
     {
         ids = new HashSet<>();
@@ -27,6 +30,7 @@ public class CustomItemController implements Listener {
         rightBlockEventMap = new HashMap<>();
         leftAirEventMap = new HashMap<>();
         rightAirEventMap = new HashMap<>();
+        blockBreakEventMap = new HashMap<>();
     }
 
 
@@ -41,6 +45,10 @@ public class CustomItemController implements Listener {
             case RIGHT_CLICK_AIR: rightAirEventMap.put(id, callback); break;
             default: return;
         }
+    }
+    public static void register(String id, Consumer<BlockBreakEvent> callback) {
+        ids.add(id);
+        blockBreakEventMap.put(id, callback);
     }
 
     @EventHandler
@@ -66,5 +74,17 @@ public class CustomItemController implements Listener {
             map.get(id).accept(event);
         }
     }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent e) {
+        var item = e.getPlayer().getInventory().getItemInMainHand();
+        String id = NBTTagUtils.getNBTTagString(item, CustomItem.ID_TAG);
+        if(!this.ids.contains(id) || !this.blockBreakEventMap.containsKey(id)) {
+            return;
+        }
+        this.blockBreakEventMap.get(id).accept(e);
+    }
+
+
 
 }
