@@ -1,6 +1,6 @@
-package customitems.controller;
+package customitemsapi.controller;
 
-import customitems.nbt.NBTTagUtils;
+import customitemsapi.nbt.NBTTagUtils;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
