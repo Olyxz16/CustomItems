@@ -1,6 +1,6 @@
-package customitemsapi;
+package customitems;
 
-import customitemsapi.controller.CustomItemController;
+import customitems.controller.CustomItemController;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

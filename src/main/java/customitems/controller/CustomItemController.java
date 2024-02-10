@@ -1,6 +1,5 @@
-package customitemsapi.controller;
+package customitems.controller;
 
-import customitemsapi.nbt.NBTTagUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -15,14 +14,14 @@ import java.util.Set;
 
 public class CustomItemController implements Listener {
 
-    private static Set<Integer> ids;
+    private static Set<String> ids;
 
-    private static Map<Integer, Consumer<PlayerInteractEvent>> leftBlockEventMap;
-    private static Map<Integer, Consumer<PlayerInteractEvent>> rightBlockEventMap;
-    private static Map<Integer, Consumer<PlayerInteractEvent>> leftAirEventMap;
-    private static Map<Integer, Consumer<PlayerInteractEvent>> rightAirEventMap;
+    private static Map<String, Consumer<PlayerInteractEvent>> leftBlockEventMap;
+    private static Map<String, Consumer<PlayerInteractEvent>> rightBlockEventMap;
+    private static Map<String, Consumer<PlayerInteractEvent>> leftAirEventMap;
+    private static Map<String, Consumer<PlayerInteractEvent>> rightAirEventMap;
 
-    private static Map<Integer, Consumer<BlockBreakEvent>> blockBreakEventMap;
+    private static Map<String, Consumer<BlockBreakEvent>> blockBreakEventMap;
 
     public CustomItemController()
     {
@@ -35,7 +34,7 @@ public class CustomItemController implements Listener {
     }
 
 
-    public static void register(Integer id, Action action, Consumer<PlayerInteractEvent> callback)
+    public static void register(String id, Action action, Consumer<PlayerInteractEvent> callback)
     {
         ids.add(id);
         switch(action)
@@ -47,7 +46,7 @@ public class CustomItemController implements Listener {
             default: return;
         }
     }
-    public static void register(Integer id, Consumer<BlockBreakEvent> callback) {
+    public static void register(String id, Consumer<BlockBreakEvent> callback) {
         ids.add(id);
         blockBreakEventMap.put(id, callback);
     }
@@ -56,20 +55,20 @@ public class CustomItemController implements Listener {
     public void onInteract(PlayerInteractEvent e)
     {
         var item = e.getItem();
-        int id = NBTTagUtils.getNBTTagInt(item, CustomItem.ID_TAG);
-        if(!this.ids.contains(id)) {
+        String id = CustomItem.getID(item);
+        if(!ids.contains(id)) {
                return;
         }
         Action action = e.getAction();
         switch(action) {
-            case LEFT_CLICK_BLOCK: run(this.leftBlockEventMap, id, e); break;
-            case RIGHT_CLICK_BLOCK: run(this.rightBlockEventMap, id, e); break;
-            case LEFT_CLICK_AIR: run(this.leftAirEventMap, id, e); break;
-            case RIGHT_CLICK_AIR: run(this.rightAirEventMap, id, e); break;
+            case LEFT_CLICK_BLOCK: run(leftBlockEventMap, id, e); break;
+            case RIGHT_CLICK_BLOCK: run(rightBlockEventMap, id, e); break;
+            case LEFT_CLICK_AIR: run(leftAirEventMap, id, e); break;
+            case RIGHT_CLICK_AIR: run(rightAirEventMap, id, e); break;
             default: return;
         }
     }
-    private void run(Map<Integer, Consumer<PlayerInteractEvent>> map, int id, PlayerInteractEvent event) {
+    private void run(Map<String, Consumer<PlayerInteractEvent>> map, String id, PlayerInteractEvent event) {
         if(map.containsKey(id)) {
             map.get(id).accept(event);
         }
@@ -78,11 +77,11 @@ public class CustomItemController implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
         var item = e.getPlayer().getInventory().getItemInMainHand();
-        String id = NBTTagUtils.getNBTTagString(item, CustomItem.ID_TAG);
-        if(!this.ids.contains(id) || !this.blockBreakEventMap.containsKey(id)) {
+        String id = CustomItem.getID(item);
+        if(!ids.contains(id) || !blockBreakEventMap.containsKey(id)) {
             return;
         }
-        this.blockBreakEventMap.get(id).accept(e);
+        blockBreakEventMap.get(id).accept(e);
     }
 
 
