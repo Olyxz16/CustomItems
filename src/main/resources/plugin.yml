@@ -1,6 +1,6 @@
-name: CustomItemsAPI
-main: customitemsapi.Main
+name: CustomItems
+main: customitems.Main
 version: 1.0
 api-version: 1.13
-description: CustomItemsAPI
+description: CustomItems
 author: Olyxz16
