@@ -55,6 +55,9 @@ public abstract class CustomItem implements Listener {
             return false;
         }
         var otherid = CustomItem.getID(item);
+        if(otherid == null) {
+            return false;
+        }
         return this.id.equals(otherid);
     }
     @Override
